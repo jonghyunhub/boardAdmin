@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.fastcampus.boardserver.mapper.UserProfileMapper">
+<mapper namespace="com.boardAdmin.mapper.UserProfileMapper">
 
     <select id="getUserProfile" resultType="com.fastcampus.boardserver.dto.UserDTO">
         SELECT id, userId, password, nickName, createTime, isWithDraw, status
