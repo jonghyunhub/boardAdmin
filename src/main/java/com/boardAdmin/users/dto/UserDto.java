@@ -13,13 +13,14 @@ public record UserDto(
         Status status,
         Date updateTime
 ) {
+    public UserDto withCreateDateAndPassword(Date updateTime, String password) {
+        return new UserDto(id, userId, password, nickname, isAdmin, createTime, isWithDraw, status, updateTime);
+    }
+
     enum Status {
         DEFAULT,
         ADMIN,
         DELETED
     }
 
-    public UserDto withCreateDate(Date createTime) {
-        return new UserDto(id, userId, password, nickname, isAdmin, createTime, isWithDraw, status, updateTime);
-    }
 }
