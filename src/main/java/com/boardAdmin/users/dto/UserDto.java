@@ -1,16 +1,18 @@
 package com.boardAdmin.users.dto;
 
+import jakarta.validation.constraints.NotBlank;
+
 import java.util.Date;
 
 public record UserDto(
-        int id,
-        String userId,
-        String password,
-        String nickname,
-        boolean isAdmin,
+        @NotBlank int id,
+        @NotBlank String userId,
+        @NotBlank String password,
+        @NotBlank String nickname,
+        @NotBlank boolean isAdmin,
         Date createTime,
-        boolean isWithDraw,
-        Status status,
+        @NotBlank boolean isWithDraw,
+        @NotBlank Status status,
         Date updateTime
 ) {
     public UserDto withCreateDateAndPassword(Date updateTime, String password) {

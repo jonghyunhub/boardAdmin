@@ -1,8 +1,8 @@
 package com.boardAdmin.users.service;
 
+import com.boardAdmin.common.exception.DomainException;
 import com.boardAdmin.common.utils.SHA256Util;
-import com.boardAdmin.exception.DomainException;
-import com.boardAdmin.exception.DuplicateIdException;
+import com.boardAdmin.users.exception.DuplicateIdException;
 import com.boardAdmin.mapper.UserProfileMapper;
 import com.boardAdmin.users.dto.UserDto;
 import lombok.RequiredArgsConstructor;
