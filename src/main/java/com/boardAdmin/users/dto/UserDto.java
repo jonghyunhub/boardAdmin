@@ -18,4 +18,8 @@ public record UserDto(
         ADMIN,
         DELETED
     }
+
+    public UserDto withCreateDate(Date createTime) {
+        return new UserDto(id, userId, password, nickname, isAdmin, createTime, isWithDraw, status, updateTime);
+    }
 }
