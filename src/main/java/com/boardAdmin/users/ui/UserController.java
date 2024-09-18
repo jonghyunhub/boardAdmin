@@ -65,4 +65,15 @@ public class UserController {
         );
     }
 
+    @PutMapping("logout")
+    public ResponseEntity<ResponseContainer<Void>> logout(HttpSession httpSession) {
+        SessionUtil.clear(httpSession);
+        return ResponseEntity.ok(
+                ResponseContainer.success()
+        );
+    }
+
+
+
+
 }
