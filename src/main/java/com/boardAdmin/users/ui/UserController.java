@@ -25,8 +25,8 @@ public class UserController {
     @PostMapping("sign-up")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "api 요청 성공"),
-            @ApiResponse(responseCode = "404", description = "유튜버 데이터가 존재하지 않음"),
-            @ApiResponse(responseCode = "500", description = "서버 오류"),
+            @ApiResponse(responseCode = "400", description = "유저 비밀번호 일치하지 않음"),
+            @ApiResponse(responseCode = "500", description = "유저 정보 insert 실패"),
     })
     public ResponseEntity<ResponseContainer<Void>> signUp(@RequestBody @Valid UserDto userDto) {
         userService.register(userDto);

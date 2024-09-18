@@ -1,6 +1,7 @@
 package com.boardAdmin.users.service;
 
 import com.boardAdmin.common.exception.DomainException;
+import com.boardAdmin.common.exception.ErrorCode;
 import com.boardAdmin.common.utils.SHA256Util;
 import com.boardAdmin.users.exception.DuplicateIdException;
 import com.boardAdmin.mapper.UserProfileMapper;
@@ -34,7 +35,7 @@ public class UserService {
         if (insertCount != 1) {
             log.error("insertMember ERROR : {}", withCreateDate);
             throw new DomainException(
-                    "insertUser Error! + 회원가입 메서드 확인\n" + "Params : " + withCreateDate
+                    ErrorCode.USER_INSERT_QUERY_ERROR, ErrorCode.USER_INSERT_QUERY_ERROR.getMessage()
             );
         }
 
@@ -56,7 +57,7 @@ public class UserService {
 
         if (memberInfo == null) {
             log.error("update password Error {}", memberInfo);
-            throw new DomainException("비밀번호가 일치하지 않습니다.");
+            throw new DomainException(ErrorCode.USER_PASSWORD_NOT_MATCH,ErrorCode.USER_PASSWORD_NOT_MATCH.getMessage());
         }
 
         UserDto updatedUserDto = memberInfo.withPassword(SHA256Util.encryptSHA256(afterPassword));
@@ -69,7 +70,7 @@ public class UserService {
 
         if (memberInfo == null) {
             log.error("update password Error {}", memberInfo);
-            throw new DomainException("비밀번호가 일치하지 않습니다.");
+            throw new DomainException(ErrorCode.USER_PASSWORD_NOT_MATCH,ErrorCode.USER_PASSWORD_NOT_MATCH.getMessage());
         }
 
         userProfileMapper.deleteUserProfile(id);
