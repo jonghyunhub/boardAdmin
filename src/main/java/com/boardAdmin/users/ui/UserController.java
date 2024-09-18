@@ -1,6 +1,7 @@
 package com.boardAdmin.users.ui;
 
 import com.boardAdmin.common.ui.ResponseContainer;
+import com.boardAdmin.common.utils.SessionUtil;
 import com.boardAdmin.users.dto.UserDto;
 import com.boardAdmin.users.service.UserService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,10 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
@@ -28,6 +26,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "api 요청 성공"),
             @ApiResponse(responseCode = "400", description = "회원 가입 요청 바디 필수 값 누락"),
             @ApiResponse(responseCode = "400", description = "유저 비밀번호 일치하지 않음"),
+            @ApiResponse(responseCode = "409", description = "아이디 중복"),
             @ApiResponse(responseCode = "500", description = "유저 정보 insert 실패"),
     })
     public ResponseEntity<ResponseContainer<Void>> signUp(@RequestBody @Valid UserDto userDto) {
@@ -48,6 +47,21 @@ public class UserController {
         userService.login(request.id(), request.password(), httpSession);
         return ResponseEntity.ok(
                 ResponseContainer.success()
+        );
+    }
+
+    @PutMapping("my-info")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "api 요청 성공"),
+            @ApiResponse(responseCode = "404", description = "유저 정보가 없음")
+    })
+    public ResponseEntity<ResponseContainer<UserInfoResponse>> memberInfo(HttpSession session) {
+        String id = SessionUtil.getLoginMemberId(session);
+        UserDto userInfo = userService.getUserInfo(id);
+        return ResponseEntity.ok(
+                ResponseContainer.success(
+                        new UserInfoResponse(userInfo)
+                )
         );
     }
 

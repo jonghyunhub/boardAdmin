@@ -23,7 +23,7 @@ public record UserDto(
         return new UserDto(id, userId, password, nickname, isAdmin, createTime, isWithDraw, status, updateTime);
     }
 
-    enum Status {
+    public enum Status {
         DEFAULT,
         ADMIN,
         DELETED

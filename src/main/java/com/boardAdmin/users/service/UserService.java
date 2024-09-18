@@ -24,7 +24,10 @@ public class UserService {
     public void register(UserDto userDto) {
         boolean duplicatedIdResult = isDuplicated(userDto.userId());
         if (duplicatedIdResult) {
-            throw new DuplicateIdException("중복된 아이디 입니다.");
+            throw new DuplicateIdException(
+                    ErrorCode.DUPLICATE_ID_ERROR,
+                    ErrorCode.DUPLICATE_ID_ERROR.getMessage()
+            );
         }
 
         // [toDo] : 서비스에서 비밀번호 암호화, 생성 시간 처리는 책임의 적절하지 못하므로 -> 컨트롤러, 인터셉터 단에서 처리
@@ -92,4 +95,11 @@ public class UserService {
     }
 
 
+    public UserDto getUserInfo(String id) {
+        UserDto userProfile = userProfileMapper.getUserProfile(id);
+        if (userProfile == null) {
+            throw new DomainException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage());
+        }
+        return userProfile;
+    }
 }
