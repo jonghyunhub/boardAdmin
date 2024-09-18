@@ -43,4 +43,37 @@ public class UserService {
     private boolean isDuplicated(String id) {
         return userProfileMapper.idCheck(id) == 1;
     }
+
+
+    public UserDto login(String id, String password) {
+        String encryptedPassword = SHA256Util.encryptSHA256(password);
+        return userProfileMapper.findByIdAndPassword(id, encryptedPassword);
+    }
+
+    public void updatePassword(String id, String beforePassword, String afterPassword) {
+        String encryptedPassword = SHA256Util.encryptSHA256(beforePassword);
+        UserDto memberInfo = userProfileMapper.findByIdAndPassword(id, encryptedPassword);
+
+        if (memberInfo == null) {
+            log.error("update password Error {}", memberInfo);
+            throw new DomainException("비밀번호가 일치하지 않습니다.");
+        }
+
+        UserDto updatedUserDto = memberInfo.withPassword(SHA256Util.encryptSHA256(afterPassword));
+        userProfileMapper.updatePassword(updatedUserDto);
+    }
+
+    public void deleteId(String id, String password) {
+        String encryptedPassword = SHA256Util.encryptSHA256(password);
+        UserDto memberInfo = userProfileMapper.findByIdAndPassword(id, encryptedPassword);
+
+        if (memberInfo == null) {
+            log.error("update password Error {}", memberInfo);
+            throw new DomainException("비밀번호가 일치하지 않습니다.");
+        }
+
+        userProfileMapper.deleteUserProfile(id);
+    }
+
+
 }

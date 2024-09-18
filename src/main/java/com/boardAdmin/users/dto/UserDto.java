@@ -17,6 +17,10 @@ public record UserDto(
         return new UserDto(id, userId, password, nickname, isAdmin, createTime, isWithDraw, status, updateTime);
     }
 
+    public UserDto withPassword(String password) {
+        return new UserDto(id, userId, password, nickname, isAdmin, createTime, isWithDraw, status, updateTime);
+    }
+
     enum Status {
         DEFAULT,
         ADMIN,
