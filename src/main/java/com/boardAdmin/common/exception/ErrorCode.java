@@ -15,7 +15,8 @@ public enum ErrorCode {
 
     // user
     USER_PASSWORD_NOT_MATCH(400,"U001" , "유저 비밀번호가 일치하지 않습니다."),
-    USER_INSERT_QUERY_ERROR(500, "U002", "유저 정보 insert 중 에러 발생"),;
+    USER_INSERT_QUERY_ERROR(500, "U002", "유저 정보 insert 중 에러 발생"),
+    USER_NOT_FOUND(404, "U003", "정보에 맞는 회원 정보가 없습니다.");
 
     private final String code;
     private final String message;

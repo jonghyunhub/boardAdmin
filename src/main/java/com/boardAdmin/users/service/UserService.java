@@ -3,9 +3,11 @@ package com.boardAdmin.users.service;
 import com.boardAdmin.common.exception.DomainException;
 import com.boardAdmin.common.exception.ErrorCode;
 import com.boardAdmin.common.utils.SHA256Util;
-import com.boardAdmin.users.exception.DuplicateIdException;
+import com.boardAdmin.common.utils.SessionUtil;
 import com.boardAdmin.mapper.UserProfileMapper;
 import com.boardAdmin.users.dto.UserDto;
+import com.boardAdmin.users.exception.DuplicateIdException;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -46,9 +48,22 @@ public class UserService {
     }
 
 
-    public UserDto login(String id, String password) {
+    // [todo] : 회원 조회 로직 및 예외처리 별도 reader 클래스로 위임
+    public void login(String id, String password, HttpSession httpSession) {
         String encryptedPassword = SHA256Util.encryptSHA256(password);
-        return userProfileMapper.findByIdAndPassword(id, encryptedPassword);
+        UserDto memberInfo = userProfileMapper.findByIdAndPassword(id, encryptedPassword);
+
+        if (memberInfo == null) {
+            log.error("login Error {}", memberInfo);
+            throw new DomainException(ErrorCode.USER_NOT_FOUND, ErrorCode.USER_NOT_FOUND.getMessage());
+        }
+
+        if (memberInfo.isAdmin()) {
+            SessionUtil.setLoginAdminId(httpSession, memberInfo.userId());
+            return;
+        }
+
+        SessionUtil.setLoginMemberId(httpSession, memberInfo.userId());
     }
 
     public void updatePassword(String id, String beforePassword, String afterPassword) {
@@ -57,7 +72,7 @@ public class UserService {
 
         if (memberInfo == null) {
             log.error("update password Error {}", memberInfo);
-            throw new DomainException(ErrorCode.USER_PASSWORD_NOT_MATCH,ErrorCode.USER_PASSWORD_NOT_MATCH.getMessage());
+            throw new DomainException(ErrorCode.USER_PASSWORD_NOT_MATCH, ErrorCode.USER_PASSWORD_NOT_MATCH.getMessage());
         }
 
         UserDto updatedUserDto = memberInfo.withPassword(SHA256Util.encryptSHA256(afterPassword));
@@ -70,7 +85,7 @@ public class UserService {
 
         if (memberInfo == null) {
             log.error("update password Error {}", memberInfo);
-            throw new DomainException(ErrorCode.USER_PASSWORD_NOT_MATCH,ErrorCode.USER_PASSWORD_NOT_MATCH.getMessage());
+            throw new DomainException(ErrorCode.USER_PASSWORD_NOT_MATCH, ErrorCode.USER_PASSWORD_NOT_MATCH.getMessage());
         }
 
         userProfileMapper.deleteUserProfile(id);
