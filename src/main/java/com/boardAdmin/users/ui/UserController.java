@@ -9,13 +9,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@Slf4j
 @RequiredArgsConstructor
 public class UserController {
 
@@ -73,7 +71,35 @@ public class UserController {
         );
     }
 
+    @PatchMapping("password")
+    public ResponseEntity<ResponseContainer<UserInfoResponse>> updateUserPassword(@RequestBody UserUpdatePasswordRequest userUpdatePasswordRequest,
+                                                                                  HttpSession httpSession) {
+        UserDto userDto = userService.updatePassword(SessionUtil.getLoginMemberId(httpSession),
+                userUpdatePasswordRequest.beforePassword(),
+                userUpdatePasswordRequest.afterPassword());
 
+        return ResponseEntity.ok(
+                ResponseContainer.success(
+                        new UserInfoResponse(userDto)
+                )
+        );
+    }
+
+
+    @DeleteMapping
+    public ResponseEntity<ResponseContainer<UserInfoResponse>> deleteId(@RequestBody UserDeleteRequest userDeleteRequest,
+                                                                        HttpSession httpSession) {
+        UserDto userDto = userService.deleteId(
+                SessionUtil.getLoginMemberId(httpSession),
+                userDeleteRequest.password()
+        );
+        return ResponseEntity.ok(
+                ResponseContainer.success(
+                        new UserInfoResponse(userDto)
+                )
+        );
+
+    }
 
 
 }

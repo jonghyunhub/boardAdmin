@@ -69,7 +69,7 @@ public class UserService {
         SessionUtil.setLoginMemberId(httpSession, memberInfo.userId());
     }
 
-    public void updatePassword(String id, String beforePassword, String afterPassword) {
+    public UserDto updatePassword(String id, String beforePassword, String afterPassword) {
         String encryptedPassword = SHA256Util.encryptSHA256(beforePassword);
         UserDto memberInfo = userProfileMapper.findByIdAndPassword(id, encryptedPassword);
 
@@ -80,9 +80,10 @@ public class UserService {
 
         UserDto updatedUserDto = memberInfo.withPassword(SHA256Util.encryptSHA256(afterPassword));
         userProfileMapper.updatePassword(updatedUserDto);
+        return updatedUserDto;
     }
 
-    public void deleteId(String id, String password) {
+    public UserDto deleteId(String id, String password) {
         String encryptedPassword = SHA256Util.encryptSHA256(password);
         UserDto memberInfo = userProfileMapper.findByIdAndPassword(id, encryptedPassword);
 
@@ -92,6 +93,7 @@ public class UserService {
         }
 
         userProfileMapper.deleteUserProfile(id);
+        return memberInfo;
     }
 
 
